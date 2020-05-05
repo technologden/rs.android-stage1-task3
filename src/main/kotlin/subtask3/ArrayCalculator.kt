@@ -1,37 +1,44 @@
 package subtask3
 
-import kotlin.math.abs
-
 class ArrayCalculator {
 
     // TODO: Complete the following function
     fun maxProductOf(numberOfItems: Int, itemsFromArray: Array<Any>): Int {
-        val sortList = itemsFromArray
+        val listInt = itemsFromArray
             .filterIsInstance<Int>()
-            .sortedBy { abs(it) }.reversed()
 
-        if (sortList.isEmpty()){return 0}
+        if (listInt.isEmpty()){return 0}
 
-
-        var result = 1
-
-        if (sortList.size<= numberOfItems){
-            for (i in sortList)
+        if (listInt.size<= numberOfItems){
+            var result = 1
+            for (i in listInt)
                 result *=i
             return result
         }
-        for (i in 0 until numberOfItems)
-            result *= sortList[i]
 
-        val positiveList = sortList.filter { i -> i >= 0  }
-        var resultPositive = 1
+        val sortListInt = listInt.sorted()
+        var startIndex = 0
+        var endIndex = sortListInt.size-1
+        var result = 1
+        var num = numberOfItems
 
-        for (i in 0 until numberOfItems)
-            resultPositive *= positiveList[i]
+        while (num>=2){
+            val startPairProd = sortListInt[startIndex] * sortListInt[startIndex + 1]
+            val endPairProd = sortListInt[endIndex] * sortListInt[endIndex - 1]
 
-        if (resultPositive>=result)
-            return resultPositive
-        else
-            return result
+            if (startPairProd > endPairProd){
+                result *= startPairProd
+                startIndex += 2
+            }else{
+                result *= endPairProd
+                endIndex -= 2
+            }
+
+            num -= 2
+        }
+        if (num == 1)
+            result *= maxOf(sortListInt[startIndex], sortListInt[endIndex])
+
+        return result
     }
 }
